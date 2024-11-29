@@ -239,3 +239,80 @@ ax.tick_params(axis='both', which='major', labelsize=14)
 plt.tight_layout() #automatyczne dopsaowanie wykresu bo ucinalo mi widok
 plt.show()
 ```
+
+# Błądzenie losowe
+
+## Klasa błądzenia losowego z generowaniem
+```commandline
+# tworzymy klasę imitującą losowy ruch
+
+from random import choice
+
+class RandomWalk():
+    """Klasa przeznaczona do wygenerowania błądzenia losowego"""
+    def __init__(self, num_points=5000): # wybieramy generowanie 5k punktow
+        """Inicjalizacja atrybutów błądzenia"""
+        self.num_points = num_points
+
+        # punkt początkowy ma współrzędne 0,0
+        self.x_values = [0]
+        self.y_values = [0]
+
+    def fill_walk(self):
+        """Wygenerowanie wszystkich punktów aż do chwili osiągnięcia oczekiwanej liczby punktów"""
+
+        # Wykonywanie kroków aż do chwili osiągnięcia oczekiwanej liczby punktów
+        while len(self.x_values) < self.num_points:
+
+            # Ustalenie kierunku oraz odległości do pokonania w tym kierunku
+            x_direction = choice([1, -1])
+            x_distance = choice([0, 1, 2, 3, 4])
+            x_step = x_direction * x_distance
+
+            y_direction = choice([1, -1])
+            y_distance = choice([0, 1, 2, 3, 4])
+            y_step = y_direction * y_distance
+
+            # Odczucenie ruchów, które prowadzą donikąd
+            if x_step == 0 and y_step == 0:
+                continue
+            # Ustalenie następnych wartości X i Y
+            x = self.x_values[-1] + x_step # -1 to ostatni element listy
+            y = self.y_values[-1] + y_step
+
+            self.x_values.append(x)
+            self.y_values.append(y)
+```
+
+## Wizualizacja i wywołanie klasy
+```commandline
+import matplotlib.pyplot as plt
+
+from random_walk import RandomWalk
+
+while True:
+    # Przygotowanie błądzenia losowego i wyświetlenie punktów
+    rw = RandomWalk(50_000)
+    rw.fill_walk()
+
+    # Wyświetlenie punktów błądzenia losowego
+    plt.style.use('classic')
+    fig, ax = plt.subplots(figsize=(20,11.25), dpi=128) # figsize ustawia wielkosc okna z rysunkiem
+    point_numbers = range(rw.num_points) # generujemy listę liczby punktów
+    ax.scatter(rw.x_values, rw.y_values, c=point_numbers,
+               cmap=plt.cm.Blues,edgecolors=None, s=1) # edgecolor wylaczy nam obramowki puntkow
+
+    # Podkreślenie pierwszego i ostatniego punktu błądzenia losowego
+    ax.scatter(0,0, c='green', edgecolors='none', s=100) # początkowy
+    ax.scatter(rw.x_values[-1], rw.y_values[-1], c='red', edgecolors='none', s=100) # końcowy; -1 to ostatni element listy
+
+    # Ukryjmy sobie osie
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+
+    plt.show()
+
+    keep_running = input("Utworzyć kolejne błądzenie losowe?[t/n]: ")
+    if keep_running == 'n':
+        break
+```
