@@ -458,3 +458,7 @@ my_layout = Layout(title='Wynik rzucania dwiema kościami D6 i D10 PISIONT tysi�
 offline.plot({'data': data, 'layout': my_layout}, filename='d6_d10.html') # wywołanie wykresu i dane konfiguracyjne
 # w tym np. nazwa pliku do której chcemy zapisac wykres
 ```
+
+# Pobieranie danych
+
+## Format CSV - comma separated values
